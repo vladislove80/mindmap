@@ -9,7 +9,11 @@ public class Mindmap {
     private Date date;
     private ArrayList<Node> mindmap;
 
-    public Mindmap(){}
+    public Mindmap(String name, Date date, ArrayList<Node> mindmap) {
+        this.name = name;
+        this.date = date;
+        this.mindmap = mindmap;
+    }
 
     public String getName() {
         return name;
