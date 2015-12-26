@@ -5,13 +5,15 @@ public class Node {
 
     private String text;
     private Form form;
-    private Border botder;
+    private Border border;
     private Color color;
     private Marker marker;
     private int number;
     private int parentNodeNumber;
 
-    public Node(){}
+    public Node(String text){
+        this.text = text;
+    }
 
     public String getText() {
         return text;
@@ -29,12 +31,12 @@ public class Node {
         this.form = form;
     }
 
-    public Border getBotder() {
-        return botder;
+    public Border getBorder() {
+        return border;
     }
 
-    public void setBotder(Border botder) {
-        this.botder = botder;
+    public void setBorder(Border botder) {
+        this.border = botder;
     }
 
     public Color getColor() {
@@ -67,5 +69,9 @@ public class Node {
 
     public void setParentNodeNumber(int parentNodeNumber) {
         this.parentNodeNumber = parentNodeNumber;
+    }
+    public String toString(){
+        return "text = " + text + ", form = " + form.form + ", border = " + border.border + ", node number = "
+                + number + ", node parent number = " + parentNodeNumber;
     }
 }
