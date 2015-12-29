@@ -113,7 +113,6 @@ public class MainActivity extends FragmentActivity {
         firstFragment = new FirstFragment();
         transaction = manager.beginTransaction();
         transaction.add(R.id.conteiner, firstFragment);
-        transaction.addToBackStack(null);
         transaction.commit();
     }
 
