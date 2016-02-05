@@ -19,16 +19,6 @@
             android:layout_marginLeft="0dp"
             android:layout_alignParentTop="true"
             android:layout_marginTop="0dp" />
-
-        <ImageButton
-            android:id="@+id/imageButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@mipmap/ic_launcher"
-            android:layout_alignParentTop="false"
-            android:layout_alignParentLeft="false"
-            android:layout_alignParentStart="false"
-            android:layout_toRightOf="@+id/mindmapName" />
     </RelativeLayout>
 
 
@@ -36,8 +26,12 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:id="@+id/canvas">
-
-
     </RelativeLayout>
+
+<app.com.myapp.controller.ZoomLayout
+    android:id="@+id/zoonlayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+</app.com.myapp.controller.ZoomLayout>
 
 </LinearLayout>

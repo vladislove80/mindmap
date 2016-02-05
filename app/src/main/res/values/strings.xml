@@ -1,13 +1,15 @@
 <resources>
-    <string name="app_name">MindMap</string>
-    <string name="item1">Item 1</string>
-    <string name="item2">Item 2</string>
-    <string name="dialog_2">Dialog 2</string>
-
+    <string name="app_name">MyApp</string>
+    <string name="setting1">login</string>
+    <string name="setting2">about</string>
+    <string name="setting3">exit</string>
+    <string name="addButton">addButton</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
-    <string name="maybe">Maybe</string>
-    <string name="node">Node</string>
-
+    <string name="item1">new node</string>
+    <string name="item2">Text</string>
+    <string name="item3">Form</string>
+    <string name="item4">Color</string>
+    <string name="item5">Delete</string>
 
 </resources>
