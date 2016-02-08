@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MyApp</string>
+    <string name="app_name">MyApp2</string>
     <string name="setting1">login</string>
     <string name="setting2">about</string>
     <string name="setting3">exit</string>

@@ -292,7 +292,7 @@ public class SecondFragment extends Fragment implements View.OnTouchListener {
     public void updateNodeColor(ArrayList<Node> allNodeForMindmap, int nodeNumber, int newBackgroundColorFromPicker){
         for (int i = 0; i < allNodeForMindmap.size(); i++) {
             if (allNodeForMindmap.get(i).getNumber() == nodeNumber) {
-                //allNodeForMindmap.get(i).setColor(newBackgroundColorFromPicker);
+                allNodeForMindmap.get(i).setColor(newBackgroundColorFromPicker);
             }
         }
     }
@@ -402,7 +402,8 @@ public class SecondFragment extends Fragment implements View.OnTouchListener {
                     break;
                 case REQUEST_CODE_COLOR:
                     int newBackgroundColorFromPicker = data.getIntExtra(DialogBackgroundColor.TAG_COLOR, -1);
-
+                    updateNodeColor(allNodeForMindmap, selected_item.getId(), newBackgroundColorFromPicker);
+                    updateViewNode(selected_item.getId());
                     break;
                 //обработка других requestCode
             }

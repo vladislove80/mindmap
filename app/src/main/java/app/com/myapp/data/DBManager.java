@@ -52,8 +52,8 @@ public class DBManager extends SQLiteOpenHelper{
 
         String CREATE_MAPS_TABLE = "CREATE TABLE "
                 + TABLE_MINDMAPS + "("
-                + MAP_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-                + MAP_NAME + " TEXT,"
+                + MAP_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + MAP_NAME + " TEXT, "
                 + MAP_DATE + " TIMESTAMP" + ");";
         db.execSQL(CREATE_MAPS_TABLE);
         String CREATE_NODES_TABLE =  "CREATE TABLE "
@@ -62,8 +62,8 @@ public class DBManager extends SQLiteOpenHelper{
                 + NODE_TEXT + " TEXT, "
                 + NODE_FORM + " TEXT, "
                 + NODE_BORDER + " TEXT, "
-                /*+ NODE_COLOR + "TEXT"
-                + NODE_MARKER + "TEXT"*/
+                + NODE_COLOR + " INTEGER, "
+                /*+ NODE_MARKER + "TEXT"*/
                 + NODE_NUMBER + " INTEGER, "
                 + NODE_PARENT_NUMBER + " INTEGER, "
                 + NODE_CENTER_X + " INTEGER, "
@@ -74,6 +74,7 @@ public class DBManager extends SQLiteOpenHelper{
         // add "Getting started" mindmap
         ArrayList<Node> startNodes = new ArrayList<Node>();
 
+        Node node = new Node("Getting started", "Rectangle", "Red", 0, -1, 100, 180);
         startNodes.add(new Node("Getting started", "Rectangle", "Red", 0, -1, 100, 180));
         startNodes.add(new Node("What is mindmap?", "Rectangle", "Red", 1, 0, 20, 20));
         startNodes.add(new Node("Add topics", "Rectangle", "Red", 2, 0, 250, 40));
@@ -89,8 +90,8 @@ public class DBManager extends SQLiteOpenHelper{
         values.put(NODE_TEXT, "Getting started"); // Node text - Mindemap name !!!
         values.put(NODE_FORM, "Rectangle"); // Node form
         values.put(NODE_BORDER, "Red"); // Node border
-        /*values.put(NODE_COLOR, node.getText()); // Node color
-        values.put(NODE_MARKER, node.getText()); // Node marker*/
+        values.put(NODE_COLOR, node.getColor()); // Node color
+        /* values.put(NODE_MARKER, node.getText()); // Node marker*/
         values.put(NODE_NUMBER, 0); // Node number
         values.put(NODE_PARENT_NUMBER, -1); // Node parent number
         values.put(NODE_CENTER_X, 100); // Node center coordinate X
@@ -103,8 +104,8 @@ public class DBManager extends SQLiteOpenHelper{
         values.put(NODE_TEXT, "What is mindmap?");
         values.put(NODE_FORM, "Rectangle");
         values.put(NODE_BORDER, "Red");
-        /*values.put(NODE_COLOR, node.getText()); // Node color
-        values.put(NODE_MARKER, node.getText()); // Node marker*/
+        values.put(NODE_COLOR, node.getColor()); // Node color
+        /* values.put(NODE_MARKER, node.getText()); // Node marker*/
         values.put(NODE_NUMBER, 1);
         values.put(NODE_PARENT_NUMBER, 0);
         values.put(NODE_CENTER_X, 20);
@@ -117,8 +118,8 @@ public class DBManager extends SQLiteOpenHelper{
         values.put(NODE_TEXT, "Add topics");
         values.put(NODE_FORM, "Rectangle");
         values.put(NODE_BORDER, "Red");
-        /*values.put(NODE_COLOR, node.getText()); // Node color
-        values.put(NODE_MARKER, node.getText()); // Node marker*/
+        values.put(NODE_COLOR, node.getColor()); // Node color
+        /* values.put(NODE_MARKER, node.getText()); // Node marker*/
         values.put(NODE_NUMBER, 2);
         values.put(NODE_PARENT_NUMBER, 0);
         values.put(NODE_CENTER_X, 250);
@@ -131,8 +132,8 @@ public class DBManager extends SQLiteOpenHelper{
         values.put(NODE_TEXT, "Navigate");
         values.put(NODE_FORM, "Rectangle");
         values.put(NODE_BORDER, "Red");
-        /*values.put(NODE_COLOR, node.getText()); // Node color
-        values.put(NODE_MARKER, node.getText()); // Node marker*/
+        values.put(NODE_COLOR, node.getColor()); // Node color
+        /* values.put(NODE_MARKER, node.getText()); // Node marker*/
         values.put(NODE_NUMBER, 3);
         values.put(NODE_PARENT_NUMBER, 0);
         values.put(NODE_CENTER_X, 250);
@@ -145,8 +146,8 @@ public class DBManager extends SQLiteOpenHelper{
         values.put(NODE_TEXT, "Customize");
         values.put(NODE_FORM, "Rectangle");
         values.put(NODE_BORDER, "Red");
-        /*values.put(NODE_COLOR, node.getText()); // Node color
-        values.put(NODE_MARKER, node.getText()); // Node marker*/
+        values.put(NODE_COLOR, node.getColor()); // Node color
+        /* values.put(NODE_MARKER, node.getText()); // Node marker*/
         values.put(NODE_NUMBER, 4);
         values.put(NODE_PARENT_NUMBER, 0);
         values.put(NODE_CENTER_X, 50);
@@ -159,8 +160,8 @@ public class DBManager extends SQLiteOpenHelper{
         values.put(NODE_TEXT, "Shape");
         values.put(NODE_FORM, "Ellipse");
         values.put(NODE_BORDER, "Red");
-        /*values.put(NODE_COLOR, node.getText()); // Node color
-        values.put(NODE_MARKER, node.getText()); // Node marker*/
+        values.put(NODE_COLOR, node.getColor()); // Node color
+        /* values.put(NODE_MARKER, node.getText()); // Node marker*/
         values.put(NODE_NUMBER, 5);
         values.put(NODE_PARENT_NUMBER, 4);
         values.put(NODE_CENTER_X, 60);
@@ -173,8 +174,8 @@ public class DBManager extends SQLiteOpenHelper{
         values.put(NODE_TEXT, "Marker");
         values.put(NODE_FORM, "Circle");
         values.put(NODE_BORDER, "Red");
-        /*values.put(NODE_COLOR, node.getText()); // Node color
-        values.put(NODE_MARKER, node.getText()); // Node marker*/
+        values.put(NODE_COLOR, node.getColor()); // Node color
+        /* values.put(NODE_MARKER, node.getText()); // Node marker*/
         values.put(NODE_NUMBER, 6);
         values.put(NODE_PARENT_NUMBER, 4);
         values.put(NODE_CENTER_X, 180);
@@ -223,8 +224,8 @@ public class DBManager extends SQLiteOpenHelper{
         values.put(NODE_TEXT, node.getText()); // Node text - Mindemap name !!!
         values.put(NODE_FORM, node.getForm()); // Node form
         values.put(NODE_BORDER, node.getBorder()); // Node border
-        /*values.put(NODE_COLOR, node.getText()); // Node color
-        values.put(NODE_MARKER, node.getText()); // Node marker*/
+        values.put(NODE_COLOR, node.getColor()); // Node color
+        /* values.put(NODE_MARKER, node.getText()); // Node marker*/
         values.put(NODE_NUMBER, node.getNumber()); // Node number
         values.put(NODE_PARENT_NUMBER, node.getParentNodeNumber()); // Node parent number
         values.put(NODE_CENTER_X, node.getCenterX()); // Node center coordinate X
@@ -273,14 +274,16 @@ public class DBManager extends SQLiteOpenHelper{
                 String text = c.getString(1);
                 String form = c.getString(2);
                 String border = c.getString(3);
-                int number = Integer.parseInt(c.getString(4));
-                int parentNumber = Integer.parseInt(c.getString(5));
-                int x = Integer.parseInt(c.getString(6));
-                int y = Integer.parseInt(c.getString(7));
+                int color = Integer.parseInt(c.getString(4));
+                int number = Integer.parseInt(c.getString(5));
+                int parentNumber = Integer.parseInt(c.getString(6));
+                int x = Integer.parseInt(c.getString(7));
+                int y = Integer.parseInt(c.getString(8));
 
                 Node node = new Node(text);
                 node.setForm(form);
                 node.setBorder(border);
+                node.setColor(color);
                 node.setNumber(number);
                 node.setParentNodeNumber(parentNumber);
                 node.setCenterX(x);
@@ -318,8 +321,8 @@ public class DBManager extends SQLiteOpenHelper{
         values.put(NODE_TEXT, node.getText());
         values.put(NODE_FORM, node.getForm());
         values.put(NODE_BORDER, node.getBorder());
-        /*values.put(NODE_COLOR, node.getText()); // Node color
-        values.put(NODE_MARKER, node.getText()); // Node marker*/
+        values.put(NODE_COLOR, node.getColor()); // Node color
+        /*values.put(NODE_MARKER, node.getText()); // Node marker*/
         values.put(NODE_NUMBER, node.getNumber());
         values.put(NODE_PARENT_NUMBER, node.getParentNodeNumber());
         values.put(NODE_CENTER_X, node.getCenterX());

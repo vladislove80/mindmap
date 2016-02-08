@@ -8,7 +8,7 @@ public class Node {
     private String text;
     private String form;
     private String border;
-    private Color color;
+    private int color;
     private Marker marker;
     private int number;
     private int parentNodeNumber;
@@ -18,6 +18,7 @@ public class Node {
     public Node(String text){
         this.text = text;
         this.form = form1;
+        this.color = 0xff59bd87;
         this.number = 0;
         this.parentNodeNumber = -1;
         this.centerX = 50;
@@ -26,6 +27,7 @@ public class Node {
     public Node(String text, int number, int parentNodeNumber){
         this.text = text;
         this.form = form1;
+        this.color = 0xff59bd87;
         this.number = number;
         this.parentNodeNumber = parentNodeNumber;
         this.centerX = 50;
@@ -35,6 +37,7 @@ public class Node {
         this.text = text;
         this.form = form;
         this.border = border;
+        this.color = 0xff59bd87;
         this.number = number;
         this.parentNodeNumber = parentNodeNumber;
         this.centerX = centerX;
@@ -81,11 +84,11 @@ public class Node {
         this.border = border;
     }
 
-    public Color getColor() {
+    public int getColor() {
         return color;
     }
 
-    public void setColor(Color color) {
+    public void setColor(int color) {
         this.color = color;
     }
 

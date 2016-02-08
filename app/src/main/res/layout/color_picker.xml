@@ -31,7 +31,7 @@
             android:layout_margin="@dimen/gap_large"
             android:padding="@dimen/gap_small"
             android:layout_width="match_parent"
-            android:layout_height="300dp"/>
+            android:layout_height="220dp"/>
 
         <app.com.myapp.view.GradientView
             android:id="@+id/bottom"
