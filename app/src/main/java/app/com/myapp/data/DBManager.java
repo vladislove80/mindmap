@@ -172,7 +172,7 @@ public class DBManager extends SQLiteOpenHelper{
         values = new ContentValues();
         values.put(MINDMAP_ID, 1);
         values.put(NODE_TEXT, "Marker");
-        values.put(NODE_FORM, "Circle");
+        values.put(NODE_FORM, "RoundRect");
         values.put(NODE_BORDER, "Red");
         values.put(NODE_COLOR, node.getColor()); // Node color
         /* values.put(NODE_MARKER, node.getText()); // Node marker*/

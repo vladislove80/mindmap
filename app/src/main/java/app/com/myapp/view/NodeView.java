@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.RectF;
 import android.view.View;
 
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ class NodeView extends View {
     private int side;
     private ArrayList<String> nodeTextArray;
     private String maxLengthWord;
+
 
 
     public NodeView(Context context, Node node) {
@@ -71,13 +73,13 @@ class NodeView extends View {
         // draw square
         int y_newLine = 0;
         if(nodeTextArray.isEmpty()) {
-            canvas.drawRect(0, 0, side, lineHight, p);
+            drawShape(canvas, node, 0, 0, side, lineHight);
             p.setColor(Color.BLUE);
             // draw text relative to the center of square
             canvas.drawText(node.getText(), 10, 20, p);
         } else {
             p.setColor(color);
-            canvas.drawRect(0, y_newLine, side, viewHight, p);
+            drawShape(canvas, node, 0, y_newLine, side, viewHight);
             for(String lineText : nodeTextArray){
                 p.setColor(Color.BLUE);
                 // draw text relative to the center of square
@@ -117,5 +119,22 @@ class NodeView extends View {
             }
         }
         return maxLengthString;
+    }
+    private void drawShape(Canvas canvas, Node node, int left, int top, int right, int bottom){
+        RectF rectf;
+        switch (node.getForm()){
+            case "Rectangle":
+                canvas.drawRect(left, top, right, bottom, p);
+                break;
+            case "Ellipse":
+                rectf = new RectF(left, top, right, bottom);
+                canvas.drawOval(rectf, p);
+                break;
+            case "RoundRect":
+                rectf = new RectF(left, top, right, bottom);
+                canvas.drawRoundRect(rectf, 20, 20, p);
+                break;
+        }
+
     }
 }

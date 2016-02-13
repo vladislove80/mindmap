@@ -3,7 +3,7 @@ package app.com.myapp.model;
 public class Node {
     private static final String form1 = "Rectangle";
     private static final String form2 = "Ellipse";
-    private static final String form3 = "Circle";
+    private static final String form3 = "RoundRect";
 
     private String text;
     private String form;

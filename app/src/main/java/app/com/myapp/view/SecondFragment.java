@@ -26,6 +26,7 @@ import app.com.myapp.R;
 
 import app.com.myapp.data.DBManager;
 import app.com.myapp.dialog.DialogBackgroundColor;
+import app.com.myapp.dialog.DialogForm;
 import app.com.myapp.dialog.DialogNewNode;
 import app.com.myapp.dialog.DialogText;
 import app.com.myapp.model.Node;
@@ -34,6 +35,7 @@ public class SecondFragment extends Fragment implements View.OnTouchListener {
     private static final int REQUEST_CODE_UPDATE_TEXT = 1;
     private static final int REQUEST_CODE_NEW_NODE = 2;
     private static final int REQUEST_CODE_COLOR = 3;
+    private static final int REQUEST_CODE_FORM = 4;
 
     private final String[] listPopup = {"+ new", "Form", "Border"};
     final String LOG_TAG = "myLogs";
@@ -296,6 +298,14 @@ public class SecondFragment extends Fragment implements View.OnTouchListener {
             }
         }
     }
+    public void updateNodeForm(ArrayList<Node> allNodeForMindmap, int nodeNumber, String newForm){
+        for (int i = 0; i < allNodeForMindmap.size(); i++) {
+            if (allNodeForMindmap.get(i).getNumber() == nodeNumber) {
+                allNodeForMindmap.get(i).setForm(newForm);
+            }
+        }
+    }
+
     public ArrayList<Node> addNewNodeInList(Node node){
         allNodeForMindmap.add(node);
         return allNodeForMindmap;
@@ -328,7 +338,6 @@ public class SecondFragment extends Fragment implements View.OnTouchListener {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
                         switch (item.getItemId()) {
-
                             case R.id.item1:
                                 openNewNodeDialog();
                                 //paintNewNodeView();
@@ -337,9 +346,7 @@ public class SecondFragment extends Fragment implements View.OnTouchListener {
                                 openTextDialog();
                                 return true;
                             case R.id.item3:
-                                Toast.makeText(getContext(),
-                                        "Вы выбрали PopupMenu 3",
-                                        Toast.LENGTH_SHORT).show();
+                                openFormDialog();
                                 return true;
                             case R.id.item4:
                                 openColorPickDialog();
@@ -382,6 +389,11 @@ public class SecondFragment extends Fragment implements View.OnTouchListener {
         fragment.setTargetFragment(this, REQUEST_CODE_COLOR);
         fragment.show(getFragmentManager(), fragment.getClass().getName());
     }
+    public void openFormDialog(){
+        DialogFragment fragment = new DialogForm();
+        fragment.setTargetFragment(this, REQUEST_CODE_FORM);
+        fragment.show(getFragmentManager(), fragment.getClass().getName());
+    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -403,6 +415,11 @@ public class SecondFragment extends Fragment implements View.OnTouchListener {
                 case REQUEST_CODE_COLOR:
                     int newBackgroundColorFromPicker = data.getIntExtra(DialogBackgroundColor.TAG_COLOR, -1);
                     updateNodeColor(allNodeForMindmap, selected_item.getId(), newBackgroundColorFromPicker);
+                    updateViewNode(selected_item.getId());
+                    break;
+                case REQUEST_CODE_FORM:
+                    String newNodeFormFromDialog = data.getStringExtra(DialogForm.TAG_NEW_FORM);
+                    updateNodeForm(allNodeForMindmap, selected_item.getId(), newNodeFormFromDialog);
                     updateViewNode(selected_item.getId());
                     break;
                 //обработка других requestCode
