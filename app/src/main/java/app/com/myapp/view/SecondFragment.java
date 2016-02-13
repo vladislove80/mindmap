@@ -305,7 +305,16 @@ public class SecondFragment extends Fragment implements View.OnTouchListener {
             }
         }
     }
-
+    public void deleteNode(ArrayList<Node> allNodeForMindmap, int nodeNumber){
+        for (int i = 0; i < allNodeForMindmap.size(); i++) {
+            if (allNodeForMindmap.get(i).getNumber() == nodeNumber) {
+                myCanvas.removeView(listNodeView.get(i));
+                allNodeForMindmap.remove(i);
+                myCanvas.removeView(listLines.get(i-1));
+                listLines.remove(i-1);
+            }
+        }
+    }
     public ArrayList<Node> addNewNodeInList(Node node){
         allNodeForMindmap.add(node);
         return allNodeForMindmap;
@@ -352,9 +361,7 @@ public class SecondFragment extends Fragment implements View.OnTouchListener {
                                 openColorPickDialog();
                                 return true;
                             case R.id.item5:
-                                Toast.makeText(getContext(),
-                                        "Вы выбрали PopupMenu 3",
-                                        Toast.LENGTH_SHORT).show();
+                                deleteNode(allNodeForMindmap, selected_item.getId());
                                 return true;
                             default:
                                 return false;
