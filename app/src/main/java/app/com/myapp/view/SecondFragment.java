@@ -306,12 +306,18 @@ public class SecondFragment extends Fragment implements View.OnTouchListener {
         }
     }
     public void deleteNode(ArrayList<Node> allNodeForMindmap, int nodeNumber){
-        for (int i = 0; i < allNodeForMindmap.size(); i++) {
-            if (allNodeForMindmap.get(i).getNumber() == nodeNumber) {
-                myCanvas.removeView(listNodeView.get(i));
-                allNodeForMindmap.remove(i);
-                myCanvas.removeView(listLines.get(i-1));
-                listLines.remove(i-1);
+        if(nodeNumber == 0){
+            Toast.makeText(getContext(), "Can't delete !!",
+                    Toast.LENGTH_SHORT).show();
+        } else {
+            for (int i = 0; i < allNodeForMindmap.size(); i++) {
+                if (allNodeForMindmap.get(i).getNumber() == nodeNumber) {
+                    helper.deleteNode(findNodeByNodeNumber(nodeNumber));//delete node frome DB
+                    allNodeForMindmap.remove(i);
+                    myCanvas.removeView(listNodeView.get(i));
+                    myCanvas.removeView(listLines.get(i-1));
+                    listLines.remove(i-1);
+                }
             }
         }
     }

@@ -53,10 +53,10 @@ public class  DrawLine extends View {
     }
 
     protected void onDraw(Canvas canvas){
-        Log.d(LOG_TAG, "onDraw starts!!");
+        //Log.d(LOG_TAG, "onDraw starts!!");
         p.setStrokeWidth(2);
         path.reset();
-        Log.d(LOG_TAG, "on Drow: x = " +x1 + ", " + "y = " + y1);
+        //Log.d(LOG_TAG, "on Drow: x = " +x1 + ", " + "y = " + y1);
         canvas.drawLine(x1, y1, x2, y2, p);
         /*path.moveTo(x1, y1);
         path.cubicTo(point21.x, point21.y, point22.x, point22.y, x2, y2);

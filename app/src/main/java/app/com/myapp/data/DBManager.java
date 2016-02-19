@@ -237,12 +237,14 @@ public class DBManager extends SQLiteOpenHelper{
 
     public AllMindmapsList getAllMindmaps(){
         ArrayList<Mindmap> mindmapList = new ArrayList<Mindmap>();
+        ArrayList<Integer> allMindmapsID = new ArrayList<>();
         String selectQuery = "SELECT  * FROM " + TABLE_MINDMAPS;
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor c = db.rawQuery(selectQuery, null);
         if (c.moveToFirst()) {
             do {
                 int id = Integer.parseInt(c.getString(0));
+                allMindmapsID.add(id);
                 String name = c.getString(1);
                 Date date = new Date();
                 //date.setTime(Date.parse(c.getString(2)));
@@ -250,7 +252,7 @@ public class DBManager extends SQLiteOpenHelper{
                 mindmapList.add(mindmap);
             } while (c.moveToNext());
         } else Log.d("myLogs", "Error getAllMindmaps");
-        return new AllMindmapsList(mindmapList);
+        return new AllMindmapsList(mindmapList, allMindmapsID);
     }
     public int getMindmapsCount() {
         String countQuery = "SELECT  * FROM " + TABLE_MINDMAPS;
@@ -301,7 +303,7 @@ public class DBManager extends SQLiteOpenHelper{
         String[] selectionArgs = new String[]{String.valueOf(id)};
         Cursor cursor = db.query(TABLE_MINDMAPS,
                 null,
-                MAP_ID + "=?",
+                MAP_ID + " = ?",
                 selectionArgs,
                 null, null, null, null);
         if (cursor != null)
@@ -332,7 +334,18 @@ public class DBManager extends SQLiteOpenHelper{
                 new String[] {String.valueOf(MAP_ID), String.valueOf(node.getNumber())});
     }
 
-    public void deleteMindmap(Mindmap mindmap){
-
+    public void deleteNode(Node node){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_NODES, NODE_NUMBER + " = ?", new String[] { String.valueOf(node.getNumber()) });
+        db.close();
+    }
+    public void deleteMindmap(int ID){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ArrayList<Node> allNodes = getAllNodes(ID);
+        for(int i = 0; i < allNodes.size(); i++){
+            db.delete(TABLE_NODES, MINDMAP_ID + " = ?", new String[] { String.valueOf(ID) });
+        }
+        db.delete(TABLE_MINDMAPS, MAP_ID + " = ?", new String[] { String.valueOf(ID) });
+        db.close();
     }
 }

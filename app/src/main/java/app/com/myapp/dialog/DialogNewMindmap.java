@@ -45,30 +45,34 @@ public class DialogNewMindmap extends DialogFragment{
         yes.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 String newMindamapName = atNewMindmapName.getText().toString(); //new mindmap name from dialog edittext
-                DBManager helper = new DBManager(getActivity());
-                //get mindmap ID
-                ArrayList<Node> nodeZeroList = new ArrayList<>();
-                Node nodeZero = new Node(newMindamapName);
-                nodeZeroList.add(nodeZero);
-                Mindmap newMindmap = new Mindmap(newMindamapName, new Date(), nodeZeroList);
-                helper.addMindmap(newMindmap); //add new mind map to database
-                Log.d("myLogs", "New map added to database !!!");
-                allMindmaps = helper.getAllMindmaps();
-                idMindmap = allMindmaps.getAllMapList().size();
-                //add node to NodesTable with mindmap_id
-                helper.addNode(idMindmap, nodeZero);
-                //add second fragment
-                secondFragment = new SecondFragment();
-                //send new mindmap ID to second fragment
-                Bundle b = new Bundle();
-                b.putInt("idMindmap", idMindmap);
-                secondFragment.setArguments(b);
+                if(!newMindamapName.equals("")){
+                    DBManager helper = new DBManager(getActivity());
+                    //get mindmap ID
+                    ArrayList<Node> nodeZeroList = new ArrayList<>();
+                    Node nodeZero = new Node(newMindamapName);
+                    nodeZeroList.add(nodeZero);
+                    Mindmap newMindmap = new Mindmap(newMindamapName, new Date(), nodeZeroList);
+                    helper.addMindmap(newMindmap); //add new mind map to database
+                    Log.d("myLogs", "New map added to database !!!");
 
-                manager = getFragmentManager();
-                transaction = manager.beginTransaction();
-                transaction.replace(R.id.conteiner, secondFragment, FRAGMENT_INSTANCE_NAME);
-                transaction.addToBackStack(null);
-                transaction.commit();
+                    allMindmaps = helper.getAllMindmaps();
+                    //get last elemt(mindmap ID) from ArrayList<Integer> allMindmapsID, that just was added
+                    idMindmap = allMindmaps.getAllMindmapsID().get(allMindmaps.getAllMapList().size()-1);
+                    //add node to NodesTable with mindmap_id
+                    helper.addNode(idMindmap, nodeZero);
+                    //add second fragment
+                    secondFragment = new SecondFragment();
+                    //send new mindmap ID to second fragment
+                    Bundle b = new Bundle();
+                    b.putInt("idMindmap", idMindmap);
+                    secondFragment.setArguments(b);
+
+                    manager = getFragmentManager();
+                    transaction = manager.beginTransaction();
+                    transaction.replace(R.id.conteiner, secondFragment, FRAGMENT_INSTANCE_NAME);
+                    transaction.addToBackStack(null);
+                    transaction.commit();
+                }
             }
         });
         yes.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {

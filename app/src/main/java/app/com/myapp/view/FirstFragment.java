@@ -1,38 +1,69 @@
 package app.com.myapp.view;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
+import android.util.Log;
+import android.view.ContextMenu;
+import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import app.com.myapp.R;
 import app.com.myapp.data.DBManager;
+import app.com.myapp.dialog.DialogDeleteMindmap;
 import app.com.myapp.dialog.DialogNewMindmap;
 import app.com.myapp.model.AllMindmapsList;
 import app.com.myapp.model.Mindmap;
 
 public class FirstFragment extends ListFragment {
+    final String LOG_TAG = "myLogs";
+    final int MENU_EDIT_MINDMAP = 1;
+    final int MENU_DELETE_MINDMAP = 2;
+    private static final int REQUEST_CODE_DELETE_MINDMAP = 1;
     DialogNewMindmap newMindmapDialog;
+    String[] mindmapsList;
     private static String FRAGMENT_INSTANCE_NAME = "fragment2";
     private AllMindmapsList allMindmaps;
     private SecondFragment secondFragment;
     private FragmentTransaction transaction;
     String nameMindmap;
-    int idMindmap;
+    int idMindmap, positionInList;
+    TextView textView;
+    ListView lvMain;
+    private View mainView;
+    ArrayAdapter<String> adapter;
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        //list of mindmaps from database
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        mainView = inflater.inflate(R.layout.mainlist0, null);
+        lvMain = (ListView) mainView.findViewById(android.R.id.list);
+        mindmapsList = initData();
+        adapter = new ArrayAdapter<>(getActivity(),
+                android.R.layout.simple_list_item_1, mindmapsList);
+        lvMain.setAdapter(adapter);
+        registerForContextMenu(lvMain);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(),
-                R.layout.mainlist, initData());
-        setListAdapter(adapter);
+        DBManager helper = new DBManager(getContext());
+        AllMindmapsList testList = helper.getAllMindmaps();
+        int it = 0;
+        for(Mindmap mp : testList.getAllMapList()) {
+            Log.d(LOG_TAG, "Minmap name: " + mp.getName());
+            Log.d(LOG_TAG, "Minmap ID: " + testList.getAllMindmapsID().get(it));
+            it++;
+        }
 
+        return mainView;
     }
 
     @Override
@@ -44,11 +75,10 @@ public class FirstFragment extends ListFragment {
             newMindmapDialog = new DialogNewMindmap();
             newMindmapDialog.show(getFragmentManager(), "dialog !!");
         } else { //choose existing minmap
-            TextView tv = (TextView)v.findViewById(R.id.textMinmapName);
-            nameMindmap = tv.getText().toString();
             secondFragment = new SecondFragment();
             //send mindmap ID to second fragment
-            idMindmap = position;
+            //(position - 1) in mindmap_list complies with position in listID
+            idMindmap = allMindmaps.getAllMindmapsID().get(position - 1);
             Bundle b = new Bundle();
             b.putInt("idMindmap", idMindmap);
             secondFragment.setArguments(b);
@@ -60,6 +90,7 @@ public class FirstFragment extends ListFragment {
             transaction.commit();
         }
     }
+
     //get mindmaps from database for list
     private String[] initData(){
         DBManager helper = new DBManager(getContext());
@@ -72,5 +103,64 @@ public class FirstFragment extends ListFragment {
             i++;
         }
         return mindmapsList;
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        // Get the list item position
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
+        int position = info.position;
+        //(position - 1) in mindmap_list complies with position in listID
+        idMindmap = allMindmaps.getAllMindmapsID().get(position - 1);
+        if (v.getId() == android.R.id.list && position > 1) {
+                menu.add(0, MENU_EDIT_MINDMAP, 0, "Edit name");
+                menu.add(0, MENU_DELETE_MINDMAP, 0, "Delete");
+        }
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        // TODO Auto-generated method stub
+        switch (item.getItemId()) {
+            // пункты меню для tvColor
+            case MENU_EDIT_MINDMAP:
+
+                break;
+            case MENU_DELETE_MINDMAP:
+                DialogFragment df = new DialogDeleteMindmap();
+                df.setTargetFragment(this, REQUEST_CODE_DELETE_MINDMAP);
+                df.show(getFragmentManager(), df.getClass().getName());
+                break;
+        }
+        return super.onContextItemSelected(item);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            switch (requestCode) {
+                case REQUEST_CODE_DELETE_MINDMAP:
+                    Toast.makeText(getActivity(), "CLick-Click!!", Toast.LENGTH_LONG).show();
+                    deleteMindmap(idMindmap); 
+
+                    DBManager helper = new DBManager(getContext());
+                    AllMindmapsList testList = helper.getAllMindmaps();
+                    int it = 0;
+                    for(Mindmap mp : testList.getAllMapList()) {
+                        Log.d(LOG_TAG, "Minmap name: " + mp.getName());
+                        Log.d(LOG_TAG, "Minmap ID: " + testList.getAllMindmapsID().get(it));
+                        it++;
+                    }
+                    mindmapsList = initData();
+                    adapter.notifyDataSetChanged();
+                    break;
+            }
+        }
+    }
+
+    private void deleteMindmap(int id_mindmap){
+        DBManager helper = new DBManager(getContext());
+        helper.deleteMindmap(id_mindmap);
     }
 }
