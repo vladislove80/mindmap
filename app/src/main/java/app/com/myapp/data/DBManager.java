@@ -6,18 +6,15 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-
 import app.com.myapp.model.AllMindmapsList;
 import app.com.myapp.model.Mindmap;
 import app.com.myapp.model.Node;
 
 public class DBManager extends SQLiteOpenHelper{
-    final String LOG_TAG = "myLogs";
+    private final String LOG_TAG = "myLogs";
     // Database Version
     private static final int DATABASE_VERSION = 1;
     // Database Name

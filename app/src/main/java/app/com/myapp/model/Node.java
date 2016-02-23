@@ -21,8 +21,8 @@ public class Node {
         this.color = 0xff59bd87;
         this.number = 0;
         this.parentNodeNumber = -1;
-        this.centerX = 50;
-        this.centerY = 50;
+        this.centerX = 150;
+        this.centerY = 350;
     }
     public Node(String text, int number, int parentNodeNumber){
         this.text = text;
@@ -30,8 +30,8 @@ public class Node {
         this.color = 0xff59bd87;
         this.number = number;
         this.parentNodeNumber = parentNodeNumber;
-        this.centerX = 50;
-        this.centerY = 50;
+        this.centerX = 150;
+        this.centerY = 350;
     }
     public Node(String text, String form, String border, int number, int parentNodeNumber, int centerX, int centerY){
         this.text = text;

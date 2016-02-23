@@ -21,6 +21,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 
 import app.com.myapp.R;
 
@@ -38,23 +40,26 @@ public class SecondFragment extends Fragment implements View.OnTouchListener {
     private static final int REQUEST_CODE_FORM = 4;
 
     private final String[] listPopup = {"+ new", "Form", "Border"};
-    final String LOG_TAG = "myLogs";
+    private final String LOG_TAG = "myLogs";
     private TextView mindmapName;
-    String mName;
+    private String mName;
     private RelativeLayout myCanvas;
     private ImageButton imgBtn;
     private View mainView;
     private View selected_item = null;
     private int offset_x = 0;
     private int offset_y = 0;
-    Boolean touchFlag = false;
-    int idMindmap;
-    ArrayList<Node> allNodeForMindmap;
-    ArrayList<NodeView> listNodeView;
-    NodeView nodePaint;
-    DrawLine newLine;
-    ArrayList<DrawLine> listLines = new ArrayList<>();
-    DBManager helper;
+    private Boolean touchFlag = false;
+    private int idMindmap;
+    private ArrayList<Node> allNodeForMindmap;
+    private ArrayList<NodeView> listNodeView;
+    private NodeView nodePaint;
+    private DrawLine newLine;
+    private ArrayList<DrawLine> listLines;
+    private DBManager helper;
+    private HashSet<Node> listNodesToDelete;
+    private int tempCounter = 0;
+    private PopupMenu popupMenu;
 
     public SecondFragment(){
         super();
@@ -86,12 +91,13 @@ public class SecondFragment extends Fragment implements View.OnTouchListener {
 
         for (Node node : allNodeForMindmap) {Log.d(LOG_TAG, "allNodeForMindmap: " + node.getText() + ", ");}
         mName = helper.getMindmapById(idMindmap);
-        listNodeView = new ArrayList<>();
+        listNodesToDelete = new HashSet<>();
 
         paintAllNode(allNodeForMindmap);
 
         return mainView;
     }
+
     public void paintViewNode(Node node){
         nodePaint = new NodeView(getContext(), node);
         nodePaint.setId(node.getNumber());
@@ -118,6 +124,8 @@ public class SecondFragment extends Fragment implements View.OnTouchListener {
     }
 
     public void paintAllNode(ArrayList<Node> allNodeForMindmap) {
+        listNodeView = new ArrayList<>();
+        listLines = new ArrayList<>();
         for(Node node : allNodeForMindmap) {
             if (node.getNumber() != 0) {
                 newLine = drawLineToParentNode(getContext(), node.getNumber());
@@ -143,7 +151,7 @@ public class SecondFragment extends Fragment implements View.OnTouchListener {
                         //popupMenu.setOnMenuItemClickListener(getContext());
                         popupMenu.inflate(R.menu.popup_menu);
                         popupMenu.show();*/
-                        showPopupMenu(selected_item);  //showPopupMenu(getContext(), selected_item);
+                        showPopupMenu(selected_item);
                         break;
                     case MotionEvent.ACTION_MOVE:
                         int selectedViewId = selected_item.getId();
@@ -161,24 +169,11 @@ public class SecondFragment extends Fragment implements View.OnTouchListener {
                             myCanvas.addView(newLine);
                         }
                         //move line from parentNode to childNode
-                        for (int nodeNumber : findIDAllChildNodes(selectedViewId)) {
+                        for (int nodeNumber : findIdAllChildNodes(selectedViewId)) {
                             myCanvas.removeView(listLines.get(nodeNumber-1));// nodeNumber ?????
                             listLines.set(nodeNumber-1, newLine = drawLineToParentNode(getContext(), nodeNumber));
                             myCanvas.addView(newLine);
                         }
-                        //move nodeView
-                        /*myCanvas.removeView(listNodeView.get(selectedViewId));
-                        Node nodeForNewView = findNodeByNodeNumber(selectedViewId);
-                        nodePaint = new NodeView(getContext(), nodeForNewView);
-                        nodePaint.setId(nodeForNewView.getNumber());
-                        nodePaint.setOnTouchListener(this);
-                        listNodeView.set(selectedViewId, nodePaint);
-                        myCanvas.addView(nodePaint);
-                        //margins view
-                        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
-                                new ViewGroup.MarginLayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT));
-                        lp.setMargins(nodeForNewView.getCenterX(), nodeForNewView.getCenterY(), 0, 0);
-                        nodePaint.setLayoutParams(lp);*/
                         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
                                 new ViewGroup.MarginLayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT));
                         lp.setMargins(x, y, 0, 0);
@@ -187,6 +182,7 @@ public class SecondFragment extends Fragment implements View.OnTouchListener {
                         mindmapName.setText(selectedViewId + " ID Node, x=" + selected_item.getX() + ", y=" + selected_item.getY());
                         break;
                     case MotionEvent.ACTION_UP:
+                        //popupMenu.dismiss();
                         touchFlag = false;
                         break;
                     default:
@@ -241,6 +237,7 @@ public class SecondFragment extends Fragment implements View.OnTouchListener {
         }
 
         Log.d(LOG_TAG, "onDestroy !!");
+        Log.d(LOG_TAG, "Count onStart method = " + tempCounter);
     }
 
     public Node findParentNode(Node nodeChild){
@@ -251,7 +248,7 @@ public class SecondFragment extends Fragment implements View.OnTouchListener {
         }
         return null;
     }
-    public ArrayList<Integer> findIDAllChildNodes(int parentNodeNumber){
+    public ArrayList<Integer> findIdAllChildNodes(int parentNodeNumber){
         ArrayList<Integer> nodesId = new ArrayList<>();
         for(Node node : allNodeForMindmap) {
             if(node.getParentNodeNumber() == parentNodeNumber) {
@@ -259,6 +256,15 @@ public class SecondFragment extends Fragment implements View.OnTouchListener {
             }
         }
         return nodesId;
+    }
+    public ArrayList<Node> findAllChildNodes(Node parentNode){
+        ArrayList<Node> childNodesList = new ArrayList<>();
+        for(Node node : allNodeForMindmap) {
+            if(node.getParentNodeNumber() == parentNode.getNumber()) {
+                childNodesList.add(node);
+            }
+        }
+        return childNodesList;
     }
     public Node findNodeByNodeNumber(int nodeNumber) {
         for(Node node : allNodeForMindmap) {
@@ -274,6 +280,12 @@ public class SecondFragment extends Fragment implements View.OnTouchListener {
         Log.d(LOG_TAG, "x = " + node1.getCenterX() + ", " + "y = " + node1.getCenterY());
         DrawLine newLine = new DrawLine(context, node1, node2);
         return newLine;
+    }
+
+    @Override
+    public void onStart() {
+        tempCounter++;
+        super.onStart();
     }
 
     public void updateXandYInAllNodesList(ArrayList<Node> allNodeForMindmap, int nodeNumber, int x, int y) {
@@ -305,20 +317,40 @@ public class SecondFragment extends Fragment implements View.OnTouchListener {
             }
         }
     }
-    public void deleteNode(ArrayList<Node> allNodeForMindmap, int nodeNumber){
-        if(nodeNumber == 0){
+    public void getListNodesToDelete(ArrayList<Node> allNodeForMindmap, int nodeNumberToDelete){
+
+        if(nodeNumberToDelete == 0){
             Toast.makeText(getContext(), "Can't delete !!",
                     Toast.LENGTH_SHORT).show();
         } else {
-            for (int i = 0; i < allNodeForMindmap.size(); i++) {
-                if (allNodeForMindmap.get(i).getNumber() == nodeNumber) {
-                    helper.deleteNode(findNodeByNodeNumber(nodeNumber));//delete node frome DB
-                    allNodeForMindmap.remove(i);
-                    myCanvas.removeView(listNodeView.get(i));
-                    myCanvas.removeView(listLines.get(i-1));
-                    listLines.remove(i-1);
+            for(Node node : allNodeForMindmap){
+                if(node.getNumber() == nodeNumberToDelete) {
+                    ArrayList<Node> childNodesList = findAllChildNodes(node);
+                    if(childNodesList.size() != 0){
+                        for (Node childNode : childNodesList){
+                            listNodesToDelete.add(childNode);
+                            getListNodesToDelete(allNodeForMindmap, childNode.getNumber());
+                        }
+                    }
+                    listNodesToDelete.add(node);
                 }
             }
+        }
+    }
+    private void deleteNodes(ArrayList<Node> allNodeForMindmap, HashSet<Node> listNodesToDelete){
+        Iterator<Node> itr = listNodesToDelete.iterator();
+        ArrayList<NodeView> viewListToDelete = new ArrayList();
+        while (itr.hasNext()) {
+            Node nodeToDelete = itr.next();
+            helper.deleteNode(nodeToDelete);
+            allNodeForMindmap.remove(nodeToDelete);
+            for(NodeView nodePaint : listNodeView) {
+                if(nodePaint.getId() == nodeToDelete.getNumber())
+                {viewListToDelete.add(nodePaint);}
+            }
+        }
+        for(NodeView nv: viewListToDelete){
+            listNodeView.remove(nv);
         }
     }
     public ArrayList<Node> addNewNodeInList(Node node){
@@ -346,7 +378,7 @@ public class SecondFragment extends Fragment implements View.OnTouchListener {
         }
     }
     private void showPopupMenu(View v) {
-        PopupMenu popupMenu = new PopupMenu(getContext(), v);
+        popupMenu = new PopupMenu(getContext(), v);
         popupMenu.inflate(R.menu.popup_menu);
         popupMenu
                 .setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -367,7 +399,10 @@ public class SecondFragment extends Fragment implements View.OnTouchListener {
                                 openColorPickDialog();
                                 return true;
                             case R.id.item5:
-                                deleteNode(allNodeForMindmap, selected_item.getId());
+                                getListNodesToDelete(allNodeForMindmap, selected_item.getId());
+                                deleteNodes(allNodeForMindmap, listNodesToDelete);
+                                myCanvas.removeAllViews();
+                                paintAllNode(allNodeForMindmap);
                                 return true;
                             default:
                                 return false;

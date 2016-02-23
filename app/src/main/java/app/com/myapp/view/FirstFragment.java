@@ -27,22 +27,21 @@ import app.com.myapp.model.AllMindmapsList;
 import app.com.myapp.model.Mindmap;
 
 public class FirstFragment extends ListFragment {
-    final String LOG_TAG = "myLogs";
-    final int MENU_EDIT_MINDMAP = 1;
-    final int MENU_DELETE_MINDMAP = 2;
+    private final String LOG_TAG = "myLogs";
+    private final int MENU_EDIT_MINDMAP = 1;
+    private final int MENU_DELETE_MINDMAP = 2;
     private static final int REQUEST_CODE_DELETE_MINDMAP = 1;
-    DialogNewMindmap newMindmapDialog;
-    String[] mindmapsList;
+    private DialogNewMindmap newMindmapDialog;
+    private String[] mindmapsList;
     private static String FRAGMENT_INSTANCE_NAME = "fragment2";
     private AllMindmapsList allMindmaps;
     private SecondFragment secondFragment;
     private FragmentTransaction transaction;
-    String nameMindmap;
-    int idMindmap, positionInList;
-    TextView textView;
-    ListView lvMain;
+    private int idMindmap;
+    private TextView textView;
+    private ListView lvMain;
     private View mainView;
-    ArrayAdapter<String> adapter;
+    private ArrayAdapter<String> adapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -53,16 +52,6 @@ public class FirstFragment extends ListFragment {
                 android.R.layout.simple_list_item_1, mindmapsList);
         lvMain.setAdapter(adapter);
         registerForContextMenu(lvMain);
-
-        DBManager helper = new DBManager(getContext());
-        AllMindmapsList testList = helper.getAllMindmaps();
-        int it = 0;
-        for(Mindmap mp : testList.getAllMapList()) {
-            Log.d(LOG_TAG, "Minmap name: " + mp.getName());
-            Log.d(LOG_TAG, "Minmap ID: " + testList.getAllMindmapsID().get(it));
-            it++;
-        }
-
         return mainView;
     }
 
@@ -142,16 +131,7 @@ public class FirstFragment extends ListFragment {
             switch (requestCode) {
                 case REQUEST_CODE_DELETE_MINDMAP:
                     Toast.makeText(getActivity(), "CLick-Click!!", Toast.LENGTH_LONG).show();
-                    deleteMindmap(idMindmap); 
-
-                    DBManager helper = new DBManager(getContext());
-                    AllMindmapsList testList = helper.getAllMindmaps();
-                    int it = 0;
-                    for(Mindmap mp : testList.getAllMapList()) {
-                        Log.d(LOG_TAG, "Minmap name: " + mp.getName());
-                        Log.d(LOG_TAG, "Minmap ID: " + testList.getAllMindmapsID().get(it));
-                        it++;
-                    }
+                    deleteMindmap(idMindmap);
                     mindmapsList = initData();
                     adapter.notifyDataSetChanged();
                     break;
