@@ -22,16 +22,10 @@
     </RelativeLayout>
 
 
-    <RelativeLayout
+    <app.com.myapp.controller.ZoomLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:id="@+id/canvas">
-    </RelativeLayout>
-
-<app.com.myapp.controller.ZoomLayout
-    android:id="@+id/zoonlayout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-</app.com.myapp.controller.ZoomLayout>
+    </app.com.myapp.controller.ZoomLayout>
 
 </LinearLayout>

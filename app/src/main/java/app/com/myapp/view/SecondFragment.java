@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
@@ -44,7 +45,7 @@ public class SecondFragment extends Fragment implements View.OnTouchListener {
     private final String LOG_TAG = "myLogs";
     private TextView mindmapName;
     private String mName;
-    private RelativeLayout myCanvas;
+    private FrameLayout myCanvas;
     private ImageButton imgBtn;
     private View mainView;
     private View selected_item = null;
@@ -83,7 +84,7 @@ public class SecondFragment extends Fragment implements View.OnTouchListener {
         mindmapName = (TextView) mainView.findViewById(R.id.mindmapName);
         //set mindmapname
         mindmapName.setText(idMindmap + " mindmap ID");
-        myCanvas = (RelativeLayout) mainView.findViewById(R.id.canvas);
+        myCanvas = (FrameLayout) mainView.findViewById(R.id.canvas);
         myCanvas.setOnTouchListener(m_onTouchListener);
         // DB
         helper = new DBManager(getContext());
@@ -143,10 +144,6 @@ public class SecondFragment extends Fragment implements View.OnTouchListener {
             if (touchFlag) {
                 switch (event.getActionMasked()) {
                     case MotionEvent.ACTION_DOWN:
-                        /*popupMenu = new PopupMenu(getContext(), selected_item);
-                        //popupMenu.setOnMenuItemClickListener(getContext());
-                        popupMenu.inflate(R.menu.popup_menu);
-                        popupMenu.show();*/
                         showPopupMenu(selected_item);
                         break;
                     case MotionEvent.ACTION_MOVE:
@@ -185,6 +182,8 @@ public class SecondFragment extends Fragment implements View.OnTouchListener {
                                 popupMenu.dismiss();
                             }}, 3000);
                         touchFlag = false;
+                        myCanvas.removeAllViews();
+                        paintAllNode(allNodeForMindmap);
                         break;
                     default:
                         break;
@@ -195,17 +194,6 @@ public class SecondFragment extends Fragment implements View.OnTouchListener {
 
     };
 
-    private void addView() {
-        /*TextView tv = new TextView(getContext());
-        tv.setText("Drug me !!!");
-        tv.setOnTouchListener(this);
-        canvas.addView(tv);*/
-
-        /*NodeView zeroNode = new NodeView(getContext(), mName);
-        zeroNode.setOnTouchListener(this);
-        canvas.addView(zeroNode);*/
-
-    }
     public boolean onTouch(View v, MotionEvent event) {
         Log.d(LOG_TAG, "method onTouch working");
         switch (event.getActionMasked()) {
@@ -407,15 +395,6 @@ public class SecondFragment extends Fragment implements View.OnTouchListener {
                     }
 
                 });
-
-        /*popupMenu.setOnDismissListener(new PopupMenu.OnDismissListener() {
-
-            @Override
-            public void onDismiss(PopupMenu menu) {
-                Toast.makeText(getContext(), "onDismiss",
-                        Toast.LENGTH_SHORT).show();
-            }
-        });*/
         popupMenu.show();
     }
 
