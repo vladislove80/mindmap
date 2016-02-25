@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
@@ -82,19 +83,15 @@ public class SecondFragment extends Fragment implements View.OnTouchListener {
         mindmapName = (TextView) mainView.findViewById(R.id.mindmapName);
         //set mindmapname
         mindmapName.setText(idMindmap + " mindmap ID");
-
         myCanvas = (RelativeLayout) mainView.findViewById(R.id.canvas);
         myCanvas.setOnTouchListener(m_onTouchListener);
         // DB
         helper = new DBManager(getContext());
         allNodeForMindmap = helper.getAllNodes(idMindmap);
-
         for (Node node : allNodeForMindmap) {Log.d(LOG_TAG, "allNodeForMindmap: " + node.getText() + ", ");}
         mName = helper.getMindmapById(idMindmap);
         listNodesToDelete = new HashSet<>();
-
         paintAllNode(allNodeForMindmap);
-
         return mainView;
     }
 
@@ -109,7 +106,7 @@ public class SecondFragment extends Fragment implements View.OnTouchListener {
                 new ViewGroup.MarginLayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT));
         lp.setMargins(node.getCenterX(), node.getCenterY(), 0, 0);
         nodePaint.setLayoutParams(lp);
-        //nodePaint.invalidate();
+
     }
 
     public void paintNodeWithLine(Node node){
@@ -135,7 +132,6 @@ public class SecondFragment extends Fragment implements View.OnTouchListener {
             }
         }
         for(Node node : allNodeForMindmap) {
-            //paintNodeWithLine(node);
             paintViewNode(node);
         }
     }
@@ -182,7 +178,12 @@ public class SecondFragment extends Fragment implements View.OnTouchListener {
                         mindmapName.setText(selectedViewId + " ID Node, x=" + selected_item.getX() + ", y=" + selected_item.getY());
                         break;
                     case MotionEvent.ACTION_UP:
-                        //popupMenu.dismiss();
+                        Handler handler = new Handler();
+                        //
+                        handler.postDelayed(new Runnable() {
+                            public void run() {
+                                popupMenu.dismiss();
+                            }}, 3000);
                         touchFlag = false;
                         break;
                     default:
@@ -214,7 +215,6 @@ public class SecondFragment extends Fragment implements View.OnTouchListener {
                 offset_x = (int) event.getX();
                 offset_y = (int) event.getY();
                 selected_item = v;
-                //showPopupMenu(selected_item);
                 break;
             case MotionEvent.ACTION_UP:
                 Log.d(LOG_TAG, "ACTION_UP !!!!!");
@@ -231,11 +231,9 @@ public class SecondFragment extends Fragment implements View.OnTouchListener {
     public void onDestroyView() {
         super.onDestroyView();
         // save all  nodes changes
-        //helper = new DBManager(getContext());
         for(Node node : allNodeForMindmap) {
             helper.updateNode(idMindmap, node);
         }
-
         Log.d(LOG_TAG, "onDestroy !!");
         Log.d(LOG_TAG, "Count onStart method = " + tempCounter);
     }
@@ -318,7 +316,6 @@ public class SecondFragment extends Fragment implements View.OnTouchListener {
         }
     }
     public void getListNodesToDelete(ArrayList<Node> allNodeForMindmap, int nodeNumberToDelete){
-
         if(nodeNumberToDelete == 0){
             Toast.makeText(getContext(), "Can't delete !!",
                     Toast.LENGTH_SHORT).show();
@@ -326,7 +323,7 @@ public class SecondFragment extends Fragment implements View.OnTouchListener {
             for(Node node : allNodeForMindmap){
                 if(node.getNumber() == nodeNumberToDelete) {
                     ArrayList<Node> childNodesList = findAllChildNodes(node);
-                    if(childNodesList.size() != 0){
+                    if(childNodesList.size() != 0) {
                         for (Node childNode : childNodesList){
                             listNodesToDelete.add(childNode);
                             getListNodesToDelete(allNodeForMindmap, childNode.getNumber());
@@ -426,6 +423,9 @@ public class SecondFragment extends Fragment implements View.OnTouchListener {
         DialogFragment fragment = new DialogText();
         fragment.setTargetFragment(this, REQUEST_CODE_UPDATE_TEXT);
         fragment.show(getFragmentManager(), fragment.getClass().getName());
+        Bundle b = new Bundle();
+        b.putString("NodeOldText", findNodeByNodeNumber(selected_item.getId()).getText());
+        fragment.setArguments(b);
     }
     public void openNewNodeDialog() {
         DialogFragment fragment = new DialogNewNode();
@@ -451,7 +451,9 @@ public class SecondFragment extends Fragment implements View.OnTouchListener {
                 case REQUEST_CODE_UPDATE_TEXT:
                     String newNodeTextFromDialog = data.getStringExtra(DialogText.TAG_NEW_TEXT);
                     updateTextNode(allNodeForMindmap, selected_item.getId(), newNodeTextFromDialog);
-                    updateViewNode(selected_item.getId());
+                    /*updateViewNode(selected_item.getId());*/
+                    myCanvas.removeAllViews();
+                    paintAllNode(allNodeForMindmap);
                     break;
                 case REQUEST_CODE_NEW_NODE:
                     String newNodeNameFromDialog = data.getStringExtra(DialogText.TAG_NEW_TEXT);
@@ -472,7 +474,6 @@ public class SecondFragment extends Fragment implements View.OnTouchListener {
                     break;
                 //обработка других requestCode
             }
-            //updateUI();
         }
     }
 }

@@ -9,12 +9,14 @@ import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.EditText;
 
 import app.com.myapp.R;
 
 public class DialogText extends DialogFragment {
     private EditText newNodeName;
+    private String textNode;
     public static final String TAG_NEW_TEXT = "NewNodeText";
     @NonNull
     @Override
@@ -22,19 +24,27 @@ public class DialogText extends DialogFragment {
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.newnodename, null);
         newNodeName = (EditText) view.findViewById(R.id.newNodeName);
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        //get textNode from Fragment1
+        Bundle extras = getArguments();
+        if (extras != null) {
+            textNode = extras.getString("NodeOldText");
+        } else textNode = "error!";
+        newNodeName.requestFocus();
+        /*newNodeName.setText(textNode);
+        newNodeName.selectAll();*/
 
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setView(view)
                 .setTitle("Text")
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                //отправляем результат обратно
-                Intent intent = new Intent();
-                intent.putExtra(TAG_NEW_TEXT, newNodeName.getText().toString());
-                getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, intent);
-            }
-        });
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //отправляем результат обратно
+                        Intent intent = new Intent();
+                        intent.putExtra(TAG_NEW_TEXT, newNodeName.getText().toString());
+                        getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, intent);
+                    }
+                });
         return builder.create();
     }
 }

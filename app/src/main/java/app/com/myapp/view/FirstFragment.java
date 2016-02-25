@@ -47,9 +47,8 @@ public class FirstFragment extends ListFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mainView = inflater.inflate(R.layout.mainlist0, null);
         lvMain = (ListView) mainView.findViewById(android.R.id.list);
-        mindmapsList = initData();
         adapter = new ArrayAdapter<>(getActivity(),
-                android.R.layout.simple_list_item_1, mindmapsList);
+                android.R.layout.simple_list_item_1, initData());
         lvMain.setAdapter(adapter);
         registerForContextMenu(lvMain);
         return mainView;
@@ -130,10 +129,14 @@ public class FirstFragment extends ListFragment {
         if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
                 case REQUEST_CODE_DELETE_MINDMAP:
-                    Toast.makeText(getActivity(), "CLick-Click!!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), "Mindmap deleted!", Toast.LENGTH_LONG).show();
                     deleteMindmap(idMindmap);
-                    mindmapsList = initData();
-                    adapter.notifyDataSetChanged();
+                    adapter = new ArrayAdapter<>(getActivity(),
+                            android.R.layout.simple_list_item_1, initData());
+                    lvMain.setAdapter(adapter);
+                    registerForContextMenu(lvMain);
+                    //adapter.notifyDataSetChanged();
+                    //lvMain.invalidateViews();
                     break;
             }
         }
@@ -143,4 +146,5 @@ public class FirstFragment extends ListFragment {
         DBManager helper = new DBManager(getContext());
         helper.deleteMindmap(id_mindmap);
     }
+
 }
