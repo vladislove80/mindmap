@@ -339,7 +339,7 @@ public class SecondFragment extends Fragment implements View.OnTouchListener {
         ArrayList<NodeView> viewListToDelete = new ArrayList();
         while (itr.hasNext()) {
             Node nodeToDelete = itr.next();
-            helper.deleteNode(nodeToDelete);
+            helper.deleteNode(nodeToDelete, idMindmap);
             allNodeForMindmap.remove(nodeToDelete);
             for(NodeView nodePaint : listNodeView) {
                 if(nodePaint.getId() == nodeToDelete.getNumber())

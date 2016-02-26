@@ -331,9 +331,9 @@ public class DBManager extends SQLiteOpenHelper{
                 new String[] {String.valueOf(MAP_ID), String.valueOf(node.getNumber())});
     }
 
-    public void deleteNode(Node node){
+    public void deleteNode(Node node, int idMindmap){
         SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(TABLE_NODES, NODE_NUMBER + " = ?", new String[] { String.valueOf(node.getNumber()) });
+        db.delete(TABLE_NODES, MINDMAP_ID + " = " + idMindmap + " AND " + NODE_NUMBER + " = ?", new String[] { String.valueOf(node.getNumber()) });
         db.close();
     }
     public void deleteMindmap(int ID){
